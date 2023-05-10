@@ -1,0 +1,173 @@
+create database database_1;
+create database database_2;
+create database database_3;
+
+use database_1;
+
+create table table_1_1(
+    atr_1_1_1 INT AUTO_INCREMENT PRIMARY KEY,
+    atr_1_1_2 VARCHAR(255),
+    atr_1_1_3 INT
+);
+
+create table table_1_2(
+    atr_1_2_1 INT AUTO_INCREMENT PRIMARY KEY,
+    atr_1_2_2 VARCHAR(255),
+    atr_1_2_3 INT,
+    FOREIGN KEY (atr_1_2_3) REFERENCES table_1_1(atr_1_1_1)
+);
+
+create table table_1_3(
+    atr_1_3_1 INT AUTO_INCREMENT PRIMARY KEY,
+    atr_1_3_2 VARCHAR(255),
+    atr_1_3_3 INT,
+    FOREIGN KEY (atr_1_3_3) REFERENCES table_1_2 (atr_1_2_1)
+);
+
+use database_2;
+
+create table table_2_1(
+    atr_2_1_1 INT AUTO_INCREMENT PRIMARY KEY,
+    atr_2_1_2 VARCHAR(255),
+    atr_2_1_3 INT
+);
+
+create table table_2_2(
+    atr_2_2_1 INT AUTO_INCREMENT PRIMARY KEY,
+    atr_2_2_2 VARCHAR(255),
+    atr_2_2_3 INT,
+    FOREIGN KEY (atr_2_2_3) REFERENCES table_2_1 (atr_2_1_1)
+);
+
+create table table_2_3(
+    atr_2_3_1 INT AUTO_INCREMENT PRIMARY KEY,
+    atr_2_3_2 VARCHAR(255),
+    atr_2_3_3 INT,
+    FOREIGN KEY (atr_2_3_3) REFERENCES table_2_2 (atr_2_2_1)
+);
+
+use database_3;
+
+create table table_3_1(
+    atr_3_1_1 INT AUTO_INCREMENT PRIMARY KEY,
+    atr_3_1_2 VARCHAR(255),
+    atr_3_1_3 INT
+);
+
+create table table_3_2(
+    atr_3_2_1 INT AUTO_INCREMENT PRIMARY KEY,
+    atr_3_2_2 VARCHAR(255),
+    atr_3_2_3 INT,
+    FOREIGN KEY (atr_3_2_3) REFERENCES table_3_1 (atr_3_1_1)
+);
+
+create table table_3_3(
+    atr_3_3_1 INT AUTO_INCREMENT PRIMARY KEY,
+    atr_3_3_2 VARCHAR(255),
+    atr_3_3_3 INT,
+    FOREIGN KEY (atr_3_3_3) REFERENCES table_3_2 (atr_3_2_1)
+);
+
+#2
+
+CREATE USER 'User_1'@'localhost' IDENTIFIED BY 'password_1';
+CREATE USER 'User_2'@'localhost' IDENTIFIED BY 'password_2';
+CREATE USER 'User_3'@'localhost' IDENTIFIED BY 'password_3';
+
+GRANT ALL PRIVILEGES ON `database_1`.* TO 'User_1'@'localhost';
+GRANT ALL PRIVILEGES ON `database_2`.* TO 'User_2'@'localhost';
+GRANT ALL PRIVILEGES ON `database_3`.* TO 'User_3'@'localhost';
+
+#USER_1
+
+use database_1;
+
+INSERT INTO table_1_1 (atr_1_1_2, atr_1_1_3) VALUES
+("Record 1", 1),
+("Record 2", 2),
+("Record 3", 3),
+("Record 4", 4),
+("Record 5", 5),
+("Record 6", 6),
+("Record 7", 7),
+("Record 8", 8),
+("Record 9", 9),
+("Record 10", 10);
+
+INSERT INTO table_1_2 (atr_1_2_2, atr_1_2_3) VALUES
+("Record 1", 1),
+("Record 2", 2),
+("Record 3", 3),
+("Record 4", 4),
+("Record 5", 5),
+("Record 6", 6),
+("Record 7", 7),
+("Record 8", 8),
+("Record 9", 9),
+("Record 10", 10);
+
+INSERT INTO table_1_3 (atr_1_3_2, atr_1_3_3) VALUES
+("Record 1", 1),
+("Record 2", 2),
+("Record 3", 3),
+("Record 4", 4),
+("Record 5", 5),
+("Record 6", 6),
+("Record 7", 7),
+("Record 8", 8),
+("Record 9", 9),
+("Record 10", 10);
+
+CREATE INDEX idx_table_1_atr_3 ON table_1_1 (atr_1_1_3);
+CREATE INDEX idx_table_2_atr_1 ON table_1_2 (atr_1_2_1);
+CREATE INDEX idx_table_3_atr_2 ON table_1_3 (atr_1_3_2);
+
+EXPLAIN SELECT * FROM table_1_1 WHERE atr_1_1_1>5;
+EXPLAIN SELECT * FROM table_1_1 WHERE atr_1_1_3>5;
+
+(SELECT * FROM table_1_1 WHERE atr_1_1_3 <3)
+UNION
+(SELECT * FROM table_1_2 WHERE atr_1_2_3 = 5)
+UNION
+(SELECT * FROM table_1_3 WHERE atr_1_3_3 > 7);
+
+
+
+SELECT * FROM table_1_1
+INNER JOIN table_1_2
+ON table_1_1.atr_1_1_1 = table_1_2.atr_1_2_3;
+
+SELECT * FROM table_1_1
+INNER JOIN table_1_2
+ON table_1_1.atr_1_1_1 = table_1_2.atr_1_2_3
+INNER JOIN table_1_3
+ON table_1_2.atr_1_2_1 = table_1_3.atr_1_3_3;
+
+
+
+SELECT * FROM table_1_1
+RIGHT JOIN table_1_2
+ON table_1_1.atr_1_1_1 = table_1_2.atr_1_2_3;
+
+SELECT * FROM table_1_2
+RIGHT JOIN table_1_1
+ON table_1_2.atr_1_2_3 = table_1_1.atr_1_1_1;
+
+
+SELECT * FROM table_1_1
+RIGHT JOIN table_1_2
+ON table_1_1.atr_1_1_1 = table_1_2.atr_1_2_3
+RIGHT JOIN table_1_3
+ON table_1_2.atr_1_2_1 = table_1_3.atr_1_3_3;
+
+
+
+SELECT * FROM table_1_1
+LEFT JOIN table_1_2
+ON table_1_1.atr_1_1_1 = table_1_2.atr_1_2_3;
+
+SELECT * FROM table_1_1
+LEFT JOIN table_1_2
+ON table_1_1.atr_1_1_1 = table_1_2.atr_1_2_3
+LEFT JOIN table_1_3
+ON table_1_2.atr_1_2_1 = table_1_3.atr_1_3_3;
