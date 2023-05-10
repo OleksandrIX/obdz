@@ -1,0 +1,100 @@
+create database database_1;
+create database database_2;
+create database database_3;
+
+use database_1;
+
+create table table_1_1(
+    atr_1_1_1 INT AUTO_INCREMENT PRIMARY KEY,
+    atr_1_1_2 VARCHAR(255),
+    atr_1_1_3 INT
+);
+
+create table table_1_2(
+    atr_1_2_1 INT AUTO_INCREMENT PRIMARY KEY,
+    atr_1_2_2 VARCHAR(255),
+    atr_1_2_3 INT,
+    FOREIGN KEY (atr_1_2_3) REFERENCES table_1_1(atr_1_1_1)
+);
+
+create table table_1_3(
+    atr_1_3_1 INT AUTO_INCREMENT PRIMARY KEY,
+    atr_1_3_2 VARCHAR(255),
+    atr_1_3_3 INT,
+    FOREIGN KEY (atr_1_3_3) REFERENCES table_1_2 (atr_1_2_1)
+);
+
+use database_2;
+
+create table table_2_1(
+    atr_2_1_1 INT AUTO_INCREMENT PRIMARY KEY,
+    atr_2_1_2 VARCHAR(255),
+    atr_2_1_3 INT
+);
+
+create table table_2_2(
+    atr_2_2_1 INT AUTO_INCREMENT PRIMARY KEY,
+    atr_2_2_2 VARCHAR(255),
+    atr_2_2_3 INT,
+    FOREIGN KEY (atr_2_2_3) REFERENCES table_2_1 (atr_2_1_1)
+);
+
+create table table_2_3(
+    atr_2_3_1 INT AUTO_INCREMENT PRIMARY KEY,
+    atr_2_3_2 VARCHAR(255),
+    atr_2_3_3 INT,
+    FOREIGN KEY (atr_2_3_3) REFERENCES table_2_2 (atr_2_2_1)
+);
+
+use database_3;
+
+create table table_3_1(
+    atr_3_1_1 INT AUTO_INCREMENT PRIMARY KEY,
+    atr_3_1_2 VARCHAR(255),
+    atr_3_1_3 INT
+);
+
+create table table_3_2(
+    atr_3_2_1 INT AUTO_INCREMENT PRIMARY KEY,
+    atr_3_2_2 VARCHAR(255),
+    atr_3_2_3 INT,
+    FOREIGN KEY (atr_3_2_3) REFERENCES table_3_1 (atr_3_1_1)
+);
+
+create table table_3_3(
+    atr_3_3_1 INT AUTO_INCREMENT PRIMARY KEY,
+    atr_3_3_2 VARCHAR(255),
+    atr_3_3_3 INT,
+    FOREIGN KEY (atr_3_3_3) REFERENCES table_3_2 (atr_3_2_1)
+);
+
+#2
+create user user_1;
+create user user_2;
+create user user_3;
+create user user_4;
+create user user_5;
+
+create role role_1;
+create role role_2;
+
+GRANT ALL PRIVILEGES ON database_1.* TO role_1;
+
+GRANT SELECT ON database_1.table_1_1 TO role_2 WITH GRANT OPTION;
+GRANT SELECT ON database_1.table_1_2 TO role_2 WITH GRANT OPTION;
+
+GRANT role_1 TO user_1;
+GRANT role_2 TO user_1;
+
+GRANT ALTER ON database_1.* TO user_1;
+GRANT ALTER ON database_3.* TO user_1;
+
+GRANT SELECT, INSERT, UPDATE, DELETE ON database_1.* TO user_1;
+GRANT SELECT, INSERT, UPDATE, DELETE ON database_3.* TO user_3;
+
+GRANT CREATE, DROP ON *.* TO user_5;
+
+REVOKE role_2 FROM user_1;
+
+REVOKE SELECT, INSERT ON database_1.* FROM user_1;
+
